@@ -4,7 +4,7 @@ import secrets
 from datetime import timedelta
 from flask_migrate import Migrate
 from sqlalchemy.exc import IntegrityError
-from models import User, Organisation, app, db, bcrypt
+from models import User, Organisation, app, db, bcrypt, user_org
 import os
 
 
@@ -48,6 +48,8 @@ def auth_register():
         phone = data['phone']
 
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+
+
         organisation_name = f"{firstName}'s Organisation"
         organisation = Organisation(name=organisation_name)
         
@@ -58,11 +60,10 @@ def auth_register():
                     last_name=lastName, 
                     email=email, 
                     password=hashed_password, 
-                    phone=phone, 
-                    organisation_id=organisation.org_id)
+                    phone=phone)
         
         validate_model(user)
-
+          
         db.session.add(user)
         db.session.commit()
 

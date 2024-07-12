@@ -27,7 +27,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    users = db.relationship('Organisation', secondary=user_org, backref='organisation')
+    organisations = db.relationship('Organisation', secondary=user_org, backref=db.backref('users', lazy=True))
 
     def __repr__(self):
         return f"<User: {self.user_id}. {self.first_name} {self.last_name} - Email: {self.email}, Phone{self.phone}>"
@@ -37,7 +37,8 @@ class Organisation(db.Model):
     org_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200), nullable=True)
-    
+    users = db.relationship('User', secondary=user_org, backref=db.backref('organisations', lazy=True))
+
 
     def __repr__(self):
         return f"<Organisation: {self.org_id}. {self.name} {self.description}>"
